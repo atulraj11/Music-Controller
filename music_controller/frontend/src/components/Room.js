@@ -33,7 +33,7 @@ const Room = ({ leaveRoomCallback }) => {
     getRoomDetails();
   }, [roomCode]);
 
-  const getRoomDetails = useCallback (async()=>{
+  const getRoomDetails = async()=>{
       console.log("getroomdetails")
       try {
         const response = await fetch(`/api/get-room?code=${roomCode}`);
@@ -47,13 +47,19 @@ const Room = ({ leaveRoomCallback }) => {
         setIsHost(data.is_host);
         // setShow(()=>!show);
   
-        if (data.is_host) {
-          authenticateSpotify();
-        }
+        // if (data.is_host) {
+        //   authenticateSpotify();
+        // }
       } catch (error) {
         alert("Error fetching room details:", error);
       }
-    },)
+    };
+
+  useEffect(()=>{
+    if (isHost) {
+      authenticateSpotify();
+    }
+  },[isHost])
 
   const authenticateSpotify = async() => {
     console.log("authenticate spotify")
