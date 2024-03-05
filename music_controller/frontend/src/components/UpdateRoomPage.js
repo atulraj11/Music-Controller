@@ -11,25 +11,26 @@ import {
   FormControlLabel,
   Collapse,
 } from "@material-ui/core";
+import { Alert } from '@mui/material';
+
 
 const UpdateRoomPage = (props) => {
   const [votes, setVotes] = useState(props.votesToSkip);
   const [guestCanPause, setGuestCanPause] = useState(props.guestCanPause);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [show, setShow] = useState(false);
-  const [initial, setInitial] = useState(true);
+  // const [error, setError] = useState("");
+  const [updateStatus, setUpdateStatus] = useState("success");  const [show, setShow] = useState(false);
+  const [showUpdateStatus, setShowUpdateStatus] = useState(false)
 
 //   const updateButtonClickedRef = useRef(false); 
   
-  useEffect(() => {
-      if(success!=""){
-        const timer = setTimeout(() => {
-        setSuccess("");
-      }, 5000); // Clear success message after 5 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [success]);
+  // useEffect(() => {
+  //     if(success!=""){
+  //       const timer = setTimeout(() => {
+  //       setSuccess("");
+  //     }, 5000); // Clear success message after 5 seconds
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [success]);
 
 
   const handleVotesChange = (e) => {
@@ -41,14 +42,14 @@ const UpdateRoomPage = (props) => {
   };
 
   //because i need to click on update room button two time (don't know the reason)
-    useEffect(()=>{
-        console.log("adjnd",show)
-         handleUpdateRoomButtonPressed();  
-    },[show]);
+    // useEffect(()=>{
+    //     console.log("adjnd",show)
+    //      handleUpdateRoomButtonPressed();  
+    // },[show]);
 
-  const handleUpdateButtonClick = () =>{
-    setShow((show)=>(!show));
-  }
+  // const handleUpdateButtonClick = () =>{
+  //   setShow((show)=>(!show));
+  // }
   
   const handleUpdateRoomButtonPressed = async () => {
       console.log("Updating Room...");
@@ -64,17 +65,22 @@ const UpdateRoomPage = (props) => {
 
       const response = await fetch("/api/update-room", requestOptions);
 
-      if (!response.ok) {
-        setError("Error Updating Room");
-      } else {
-        console.log("initial",initial)
-        if(initial)
-        {
-          setSuccess("Room Updated Successfully");
-          props.updateCallback();
-        }
-        setInitial(false);
-      }
+      if (response.ok) {
+        setUpdateStatus("success")
+    } else {
+        setUpdateStatus("error")
+    }
+    setShowUpdateStatus(true)
+      // else {
+        // console.log("initial",initial)
+        // if(initial)
+        // {
+        // setSuccess("Room Updated Successfully");
+        //   // props.updateCallback();
+        // }
+        // setInitial(false);
+    // }
+      // window.location.reload(false);
   };
   
   const UpdateButton = () => {
@@ -84,7 +90,7 @@ const UpdateRoomPage = (props) => {
           <Button
             color="primary"
             variant="contained"
-            onClick={handleUpdateButtonClick}
+            onClick={handleUpdateRoomButtonPressed}
           >
             Update Room
           </Button>
@@ -96,7 +102,13 @@ const UpdateRoomPage = (props) => {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} align="center">
-        <Collapse in={success!="" || error!=""}>{success}</Collapse>
+      <Collapse in={showUpdateStatus}>
+                    <Alert severity={updateStatus} onClose={() => {setShowUpdateStatus(false)}}>
+                        {updateStatus == "success" ? 
+                            "Updated room successfully!" : "Failed to update room!"
+                        }
+                    </Alert>
+                </Collapse>
         <Typography component="h4" variant="h4">
           Update room
         </Typography>

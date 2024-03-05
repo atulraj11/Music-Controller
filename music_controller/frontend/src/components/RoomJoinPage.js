@@ -22,7 +22,6 @@ const RoomJoinPage = () => {
   };
 
   const roomButtonPressed = async() => { 
-    
     try{
       const response = await fetch("/api/join-room", requestOptions);
       if(response.ok && roomCode!=''){
@@ -39,10 +38,10 @@ const RoomJoinPage = () => {
   };
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} >
       <Grid item xs={12} align="center">
         <Typography variant="h4" component="h4">
-          Join a Room baby
+          Join a Room
         </Typography>
       </Grid>
       <Grid item xs={12} align="center">
@@ -52,7 +51,7 @@ const RoomJoinPage = () => {
           placeholder="Enter a Room Code"
           value={roomCode}
           helperText={error}
-          variant="outlined"
+          variant="filled"
           onChange={handleTextFieldChange}
         />
       </Grid>
@@ -62,7 +61,7 @@ const RoomJoinPage = () => {
           color="primary"
           onClick={roomButtonPressed}
         >
-          Enter Room
+          Enter Room Code
         </Button>
       </Grid>
       <Grid item xs={12} align="center">

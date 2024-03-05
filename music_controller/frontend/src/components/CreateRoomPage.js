@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import { Link, useNavigate } from "react-router-dom";
 
-const CreateRoomPage = (props) => {
+const CreateRoomPage = () => {
   const navigate = useNavigate();
   const [votes, setVotes] = useState(2);
   const [guestCanPause, setGuestCanPause] = useState(true);
@@ -24,7 +24,7 @@ const CreateRoomPage = (props) => {
 
   const handleGuestCanPauseChange = (e) => {
     // console.log(e.target.value)
-    setGuestCanPause(e.target.value == "true" ? true : false);
+    setGuestCanPause(e.target.value === "true" ? true : false);
   };
 
   
@@ -45,7 +45,7 @@ const CreateRoomPage = (props) => {
         return response.json();
       })
       .then((data) => navigate("/room/" + data.code))
-      .catch((error) => console.error("Error during fetch:", error));
+      .catch((error) => console.error("Error during fetching:", error));
   };
 
     const CreateButton = () => {

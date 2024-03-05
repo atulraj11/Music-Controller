@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import RoomJoinPage from "./RoomJoinPage";
 import CreateRoomPage from "./CreateRoomPage";
+import CreateRoom from "./CreateRoom";
+import Room2 from "./Room2";
 import Room from "./Room";
 import { Grid, Button, ButtonGroup, Typography } from "@material-ui/core";
 import {
@@ -73,10 +75,10 @@ const HomePage = () => {
           }
         ></Route>
         <Route path="/join" element={<RoomJoinPage />}></Route>
-        <Route path="/create" element={<CreateRoomPage />}></Route>
+        <Route path="/create" element={<CreateRoom />}></Route>
         <Route
           path="/room/:roomCode"
-          element={<Room leaveRoomCallback={clearRoomCode} />}
+          element={<Room leaveRoomCall={clearRoomCode}/>}
         ></Route>
       </Routes>
     </Router>
