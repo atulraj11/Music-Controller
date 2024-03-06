@@ -14,78 +14,58 @@ import {
 import { Alert } from '@mui/material';
 
 
-const UpdateRoomPage = (props) => {
-  const [votes, setVotes] = useState(props.votesToSkip);
-  const [guestCanPause, setGuestCanPause] = useState(props.guestCanPause);
-  // const [error, setError] = useState("");
-  const [updateStatus, setUpdateStatus] = useState("success");  const [show, setShow] = useState(false);
+const UpdateRoomPage = ( {propVotesToSkip=2,  propGuestCanPause=true, roomCode=null}) => {
+
+  const [guestCanPause, setGuestCanPause] = useState( propGuestCanPause);
+  const [votesToSkip, setVotesToSkip] = useState( propVotesToSkip);
+  const [updateStatus, setUpdateStatus] = useState("success");
   const [showUpdateStatus, setShowUpdateStatus] = useState(false)
 
-//   const updateButtonClickedRef = useRef(false); 
-  
-  // useEffect(() => {
-  //     if(success!=""){
-  //       const timer = setTimeout(() => {
-  //       setSuccess("");
-  //     }, 5000); // Clear success message after 5 seconds
+   //To remove showing updatestatus after 5 second 
+  // useEffect(()=>{
+  //   if(showUpdateStatus)
+  //   {
+  //     const timer = setTimeout(setUpdateStatus(''),5000);
+
   //     return () => clearTimeout(timer);
   //   }
-  // }, [success]);
-
-
+  // },[showUpdateStatus]);
+    
   const handleVotesChange = (e) => {
-    setVotes(e.target.value);
+    setVotesToSkip(e.target.value);
   };
 
   const handleGuestCanPauseChange = (e) => {
-    setGuestCanPause(e.target.value === "true" ? true : false);
+    setGuestCanPause(e.target.value);
   };
 
-  //because i need to click on update room button two time (don't know the reason)
-    // useEffect(()=>{
-    //     console.log("adjnd",show)
-    //      handleUpdateRoomButtonPressed();  
-    // },[show]);
-
-  // const handleUpdateButtonClick = () =>{
-  //   setShow((show)=>(!show));
-  // }
   
-  const handleUpdateRoomButtonPressed = async () => {
+  const handleUpdateRoomButtonPressed = async() => {
       console.log("Updating Room...");
       const requestOptions = {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          votes_to_skip: votes,
+          votes_to_skip: votesToSkip,
           guest_can_pause: guestCanPause,
-          code: props.roomCode,
+          code: roomCode,
         }),
       };
 
-      const response = await fetch("/api/update-room", requestOptions);
-
-      if (response.ok) {
-        setUpdateStatus("success")
-    } else {
-        setUpdateStatus("error")
-    }
-    setShowUpdateStatus(true)
-      // else {
-        // console.log("initial",initial)
-        // if(initial)
-        // {
-        // setSuccess("Room Updated Successfully");
-        //   // props.updateCallback();
-        // }
-        // setInitial(false);
-    // }
-      // window.location.reload(false);
+      await fetch("/api/update-room", requestOptions)
+      .then((response) => {
+          if (response.ok) {
+              setUpdateStatus("success")
+          } else {
+              setUpdateStatus("error")
+          }
+          setShowUpdateStatus(true)
+      });
+     
   };
   
   const UpdateButton = () => {
     return (
-      <>
         <Grid item xs={12} align="center">
           <Button
             color="primary"
@@ -95,7 +75,6 @@ const UpdateRoomPage = (props) => {
             Update Room
           </Button>
         </Grid>
-      </>
     );
   };
 
@@ -109,10 +88,13 @@ const UpdateRoomPage = (props) => {
                         }
                     </Alert>
                 </Collapse>
-        <Typography component="h4" variant="h4">
-          Update room
-        </Typography>
-      </Grid>
+        </Grid>
+        <Grid item xs = {12} align="center">
+            <Typography component='h4' variant='h4'>
+                    Update room
+            </Typography>
+        </Grid>
+      
       <Grid item xs={12} align="center">
         <FormControl component={"fieldset"}>
           <FormHelperText>
@@ -120,18 +102,16 @@ const UpdateRoomPage = (props) => {
           </FormHelperText>
           <RadioGroup
             row
-            defaultValue={guestCanPause.toString()}
+            value={guestCanPause.toString()}
             onChange={handleGuestCanPauseChange}
           >
             <FormControlLabel
-              defaultValue=""
               value="true"
               control={<Radio color="primary" />}
               label="Play/Pause"
               labelPlacement="bottom"
             />
             <FormControlLabel
-              defaultValue=""
               value="false"
               control={<Radio color="secondary" />}
               label="No Control"
@@ -145,8 +125,8 @@ const UpdateRoomPage = (props) => {
           <TextField
             required={true}
             type="number"
+            defaultValue={votesToSkip}
             onChange={handleVotesChange}
-            defaultValue={votes}
             inputProps={{
               min: 1,
               style: { textAlign: "center" },

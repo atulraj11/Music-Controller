@@ -6,7 +6,7 @@ import MusicPlayer from "./MusicPlayer";
 import CreateRoom from "./CreateRoom";
 
 const Room = ({leaveRoomCall}) => {
-  const navigate = useNavigate();
+  let navigate = useNavigate();
   const [votes, setVotesToSkip] = useState(2);
   const [guestCanPause, setGuestCanPause] = useState(false);
   const [isHost, setIsHost] = useState(false);
@@ -31,35 +31,47 @@ const Room = ({leaveRoomCall}) => {
   const getRoomDetails = async()=>{
       // console.log("getroomdetails")
       try {
-        const response = await fetch(`/api/get-room?code=${roomCode}`);
+        const response =  await fetch(`/api/get-room?code=${roomCode}`);
         if (!response.ok) {
           leaveRoomCall();
           navigate("/");
         }
 
-        const data = await response.json();
+        const data =  await response.json();
         setVotesToSkip(data.votes_to_skip);
         setGuestCanPause(data.guest_can_pause);
         setIsHost(data.is_host);
         // setShowSettings(()=>!showSettings);
   
-        // if (data.is_host) {
-        //   authenticateSpotify();
-        // }
+        if (!spotifyAuthenticated && data.is_host) {
+          authenticateSpotify();
+        };
       } catch (error) {
         alert("Error fetching room details:", error);
       }
     };
-
-  useEffect(()=>{
-    if (isHost) {
-      authenticateSpotify();
-    }
-  },[isHost])
+//   useEffect(async() => {
+//     await fetch("/api/get-room" + "?code=" + roomCode)
+//     .then(response => {
+//         if (!response.ok) {
+//             navigate("/");
+//         };
+        
+//         return response.json()
+//     })
+//     .then(data => {       
+//             setVotesToSkip(data.votes_to_skip);
+//             setGuestCanPause(data.guest_can_pause);
+//             setIsHost(data.is_host);
+//             if (!spotifyAuthenticated && data.is_host) {
+//                 authenticateSpotify();
+//             };
+//     });
+// }, [showSettings]);
 
   const authenticateSpotify = async() => {
     console.log("authenticate spotify")
-    await fetch("/spotify/is-authenticated")
+     await fetch("/spotify/is-authenticated")
       .then((response) => response.json())
       .then((data) => {
         setSpotifyAuthenticated(data.status);
@@ -74,8 +86,8 @@ const Room = ({leaveRoomCall}) => {
       });
   };
 
-  const getCurrentSong = () =>{
-    fetch('/spotify/current-song')
+  const getCurrentSong = async() =>{
+    await fetch('/spotify/current-song')
     .then((response)=>{
         if (!response.ok) {
           window.location.reload();
@@ -106,7 +118,6 @@ const Room = ({leaveRoomCall}) => {
     .then((response) => { 
       leaveRoomCall();
       navigate("/"); 
-      window.location.reload();
     });
   };
 
@@ -114,30 +125,10 @@ const Room = ({leaveRoomCall}) => {
     setShowSettings(!showSettings);
   }
 
-  const Settings = () => {
-    return (
-      <Grid container spacing={1}>
-        <Grid item xs={12} align="center">
-          <CreateRoom
-            propVotesToSkip={votes}
-            propGuestCanPause={guestCanPause}
-            update={true}
-            roomCode={roomCode}
-            // updateCallback={getRoomDetails}
-          />
-        </Grid>
-        <Grid item xs={12} align="center">
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleShowSettings}
-          >
-            Close
-          </Button>
-        </Grid>
-      </Grid>
-    );
-  };
+  // const Settings = () => {
+  //   return (
+      
+  // };
 
   const SettingsButton = () => {
     return (
@@ -176,7 +167,28 @@ const Room = ({leaveRoomCall}) => {
   }
 
   if (showSettings) {
-    return <Settings />;
+    return (
+      <Grid container spacing={1}>
+        <Grid item xs={12} align="center">
+          <UpdateRoomPage
+            propVotesToSkip={votes}
+            propGuestCanPause={guestCanPause}
+            // update={true}
+            roomCode={roomCode}
+            // updateCallback={getRoomDetails}
+          />
+        </Grid>
+        <Grid item xs={12} align="center">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleShowSettings}
+          >
+            Close
+          </Button>
+        </Grid>
+      </Grid>
+    );
     // setShowSettings(()=>!showSettings);
   }
   return (

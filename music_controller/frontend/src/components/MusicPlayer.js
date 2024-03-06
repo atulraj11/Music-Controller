@@ -25,9 +25,6 @@ const useStyles = makeStyles((theme) => ({
   customAlertText: {
     fontSize: '2.5rem',
   },
-  // customAlertIcon: {
-  //   fontSize: '0rem', // Match the font size with the text
-  // },
 }));
 
 // here songs details from Room is passed in props 
@@ -90,7 +87,7 @@ const MusicPlayer = (props) => {
   }
 
   const CustomAlert = () => {
-    const classes = useStyles();
+    // const classes = useStyles();
     return(
       // <Collapse in>
             <Alert  icon={false} sx={{
@@ -98,7 +95,6 @@ const MusicPlayer = (props) => {
               fontSize: '2.8rem',
               alignItems:'center',
               justifyContent: 'center',
-              // iconSize: "2.5rem",
             }} severity="info">
               <span>No Music is Playing on Spotify</span>
             </Alert>

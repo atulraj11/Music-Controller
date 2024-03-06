@@ -85,8 +85,8 @@ const CreateRoomPage = () => {
           </FormHelperText>
           <RadioGroup
             row
-            // value={guestCanPause.toString()}
-            defaultValue={guestCanPause.toString()}
+            value={guestCanPause.toString()}
+            //defaultValue ={guestCanPause.toString()}
             onChange={handleGuestCanPauseChange}
           >
             <FormControlLabel
