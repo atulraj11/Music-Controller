@@ -1,5 +1,6 @@
 
-https://github.com/atulraj11/Music-Controller/assets/68856282/a83721ca-22f7-4685-bc22-1d5b448202b0
+https://github.com/atulraj11/Music-Controller/assets/68856282/1863531f-6257-4e62-b4be-17b7083dfc6d
+
 
 # Music Controller
 
