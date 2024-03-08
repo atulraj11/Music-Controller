@@ -1,5 +1,5 @@
 
-![](https://github.com/RussH-code/Party-room-music-controller/blob/main/demo.gif)
+![](https://github.com/atulraj11/Music-Controller/blob/main/Project.gif)
 
 # Music Controller
 
