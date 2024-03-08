@@ -60,7 +60,6 @@ class isAuthenticated(APIView):
 class CurrentSong(APIView):
     def get(self,request,format=None):
         room_code= self.request.session.get('room_code')
-        # print(self.request.session.keys)
         room = Room.objects.filter(code=room_code)
         # print("room_code",room_code)
         if room.exists():
@@ -68,9 +67,8 @@ class CurrentSong(APIView):
         else:
             return Response({"message":"Room not found"},status=status.HTTP_404_NOT_FOUND)
         host= room.host
-        endpoint = "/player/currently-playing"
+        endpoint = "/me/player/currently-playing"
         response= execute_spotify_api_request(host,endpoint)
-        # print(response.get('Error'))
         if 'error' in response or 'item' not in response:
             return Response({"Error":response.get('Error')},status=status.HTTP_204_NO_CONTENT)
         
@@ -89,7 +87,11 @@ class CurrentSong(APIView):
             
             name=artist.get('name')
             artist_string+=name
-        
+            
+        artist_id = item.get('artists')[0].get('id')
+        response= get_artist(host,artist_id)
+        artist_image_url = response.get('images')[0].get('url')
+
         votes= Vote.objects.filter(room=room,song_id=room.current_song)
         votes=len(votes)
         song= {
@@ -101,13 +103,11 @@ class CurrentSong(APIView):
             'is_playing': is_playing,
             'votes': votes,
             'votes_required': room.votes_to_skip,
-            'id': song_id
+            'id': song_id,
+            'artist_image_url': artist_image_url,
         }
         
         self.update_room_song(room,song_id)
-        # song_json = json.dumps(song)
-        # song_load= json.loads(song_json)
-        # print(item.get('name'))
         return Response(song,status=status.HTTP_200_OK)
     
     def update_room_song(self,room,song_id):
@@ -145,7 +145,6 @@ class SkipSong(APIView):
         room_code = self.request.session.get('room_code')
         room = Room.objects.filter(code=room_code)[0]
         # print("************************************")
-        # print(room.current_song)
         votes= Vote.objects.filter(room=room,song_id=room.current_song)
         votes_needed = room.votes_to_skip
         

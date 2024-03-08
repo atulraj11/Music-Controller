@@ -7,8 +7,7 @@ from .settings import *
 import requests
 import json
 
-BASE_URL = 'https://api.spotify.com/v1/me'
-
+BASE_URL = 'https://api.spotify.com/v1'
 
 def get_user_tokens(session_id):
     user_tokens = SpotifyToken.objects.filter(user=session_id)
@@ -19,7 +18,6 @@ def get_user_tokens(session_id):
 
 def update_or_create_user_tokens(session_id, access_token, token_type, expires_in, refresh_token):
     tokens = get_user_tokens(session_id)
-    # token expires in now + time got from spotify api
     expires_in = timezone.now() + timedelta(seconds=expires_in)
 
     if tokens:
@@ -59,24 +57,29 @@ def refresh_token(session_id):
     
     access_token = response.get('access_token')
     token_type = response.get('token_type')
-    # refresh_token = response.get('refresh_token')
     expires_in = response.get('expires_in')
     
     
     update_or_create_user_tokens(session_id, access_token, token_type, expires_in, refresh_token)    
     
-def execute_spotify_api_request(session_id,endpoint,post_=False,put_=False):
+def execute_spotify_api_request(session_id,endpoint,params=None,body=None,post_=False,put_=False):
     tokens = get_user_tokens(session_id)
-    # print(tokens.refresh_token)
     headers = {'Content-type': 'application/json', 'Authorization': 'Bearer ' + tokens.access_token}
-    # print(f"Requesting {BASE_URL + endpoint}")
+    url = f"{BASE_URL}{endpoint}"
+    if params:
+        url += f"/{params['id']}"
+        params=None
+    
+    body= json.dumps(body) if body else None
+    
     if post_:
         post(BASE_URL+endpoint,headers)
     
     if put_:
         put(BASE_URL+endpoint,headers)
     
-    response = get(BASE_URL+endpoint,{},headers=headers)
+    # print(BASE_URL+endpoint)
+    response = get(url,data=body,headers=headers)
     
     try:
         response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
@@ -92,15 +95,20 @@ def execute_spotify_api_request(session_id,endpoint,post_=False,put_=False):
         return {'Error': 'Issue with request'}
 
 def pause_song(session_id):
-    response = execute_spotify_api_request(session_id,'/player/pause',put_=True)
-    # print(response)
+    response = execute_spotify_api_request(session_id,'/me/player/pause',put_=True)
     return response
 
 def play_song(session_id):
-    response= execute_spotify_api_request(session_id,'/player/play',put_=True)
-    # print(response)
+    response= execute_spotify_api_request(session_id,'/me/player/play',put_=True)
     return response
 
 def skip_song(session_id):
-    response= execute_spotify_api_request(session_id,'/player/next',post_=True)
+    response= execute_spotify_api_request(session_id,'/me/player/next',post_=True)
+    return response
+
+def get_artist(session_id,artist_id):
+    params= {
+        "id" : artist_id
+    }
+    response= execute_spotify_api_request(session_id,'/artists',params)
     return response

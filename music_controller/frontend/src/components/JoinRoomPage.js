@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
-import { Grid,Button,Typography,TextField } from '@material-ui/core'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import { Grid, Button, Typography, TextField } from "@material-ui/core";
+import { Link, useNavigate } from "react-router-dom";
 
-const RoomJoinPage = () => {
+const JoinRoomPage = () => {
   const navigate = useNavigate();
-  
-  const[roomCode,setroomCode] = useState('');
-  const[error,seterror] = useState('');
 
+  const [roomCode, setroomCode] = useState("");
+  const [error, seterror] = useState("");
 
   const handleTextFieldChange = (e) => {
     setroomCode(e.target.value);
@@ -21,24 +20,23 @@ const RoomJoinPage = () => {
     }),
   };
 
-  const roomButtonPressed = async() => { 
-    try{
+  const roomButtonPressed = async () => {
+    try {
       const response = await fetch("/api/join-room", requestOptions);
-      if(response.ok && roomCode!=''){
-        navigate(`/room/${roomCode}`)
+      if (response.ok && roomCode != "") {
+        navigate(`/room/${roomCode}`);
+      } else {
+        roomCode != ""
+          ? seterror("Room not found")
+          : seterror("Enter Room Code");
       }
-      else {
-        roomCode!=''?seterror("Room not found"):seterror("Enter Room Code");
-      }
+    } catch (error) {
+      console.log(error);
     }
-    catch(error){
-        console.log(error);
-    }
-     
   };
 
   return (
-    <Grid container spacing={1} >
+    <Grid container spacing={1}>
       <Grid item xs={12} align="center">
         <Typography variant="h4" component="h4">
           Join a Room
@@ -56,11 +54,7 @@ const RoomJoinPage = () => {
         />
       </Grid>
       <Grid item xs={12} align="center">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={roomButtonPressed}
-        >
+        <Button variant="contained" color="primary" onClick={roomButtonPressed}>
           Enter Room Code
         </Button>
       </Grid>
@@ -71,6 +65,6 @@ const RoomJoinPage = () => {
       </Grid>
     </Grid>
   );
-}
+};
 
-export default RoomJoinPage
+export default JoinRoomPage;

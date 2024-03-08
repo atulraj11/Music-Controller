@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import RoomJoinPage from "./RoomJoinPage";
+import JoinRoomPage from "./JoinRoomPage";
 import CreateRoomPage from "./CreateRoomPage";
 // import CreateRoom from "./CreateRoom";
 // import Room2 from "./Room2";
@@ -74,7 +74,7 @@ const HomePage = () => {
             )
           }
         ></Route>
-        <Route path="/join" element={<RoomJoinPage />}></Route>
+        <Route path="/join" element={<JoinRoomPage />}></Route>
         <Route path="/create" element={<CreateRoomPage />}></Route>
         <Route
           path="/room/:roomCode"

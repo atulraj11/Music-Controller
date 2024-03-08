@@ -11,70 +11,93 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { Collapse } from "@material-ui/core";
-import { Alert } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Alert } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
   customAlert: {
-    // height: '10rem',
-    width: 'auto',
-    // fontSize: '40px',
-    alignItems:'center',
-    justifyContent: 'center',
+    width: "auto",
+    alignItems: "center",
+    justifyContent: "center",
   },
   customAlertText: {
-    fontSize: '2.5rem',
+    fontSize: "2.5rem",
   },
 }));
 
-// here songs details from Room is passed in props 
+// here songs details from Room is passed in props
 const MusicPlayer = (props) => {
   const songprogress = (props.time / props.duration) * 100;
-  
-  const pauseSong = () =>{
-    const requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-      };
-      fetch("/spotify/pause", requestOptions);
-  }
 
-  const playSong = () =>{
+  const pauseSong = () => {
     const requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-      };
-      fetch("/spotify/play", requestOptions);
-      
-  }
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch("/spotify/pause", requestOptions);
+  };
 
-  const skipSong = ()=> {
+  const playSong = () => {
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch("/spotify/play", requestOptions);
+  };
+
+  const skipSong = () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     };
-    fetch("/spotify/skip", requestOptions)
-  }
+    fetch("/spotify/skip", requestOptions);
+  };
 
-  const MusicContent = () =>{
-     return (<Grid container alignItems="center">
-        <Grid item align="center" xs={4}>
+  const errorURlMapping = {
+    204: ["/static/images/204-image.gif", "No Music is Playing on Spotify"],
+    500: ["/static/images/500-image.gif", "No Internet Connection"],
+    404: ["/static/images/404-image.gif", "Not Available,Reload the page"],
+  };
+
+  const MusicContent = () => {
+    return (
+      <Grid container alignItems="center">
+        <Grid item align="center" xs={5}>
           <img
             src={props.image_url}
             alt="album_cover"
-            height="100%"
-            width="100%"
+            style={{
+              height: "100%",
+              width: "100%",
+              objectFit: "cover",
+            }}
           />
         </Grid>
-        <Grid item align="center" xs={8}>
+        <Grid
+          item
+          align="center"
+          xs={7}
+          style={{
+            height: "19rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),url(${props.artist_image_url})`,
+            backgroundSize: "100% 100%",
+            backgroundPosition: "50% 0",
+            textShadow: "0 0 black",
+          }}
+        >
           <Typography component="h5" variant="h5">
             {props.title}
           </Typography>
           <Typography color="textSecondary" variant="subtitle1">
             {props.artist}
           </Typography>
+
           <div>
-            <IconButton onClick={props.is_playing? pauseSong : playSong}>
+            <IconButton onClick={props.is_playing ? pauseSong : playSong}>
               {props.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
             </IconButton>
             <IconButton onClick={skipSong}>
@@ -83,41 +106,49 @@ const MusicPlayer = (props) => {
           </div>
         </Grid>
       </Grid>
-     );
-  }
+    );
+  };
 
   const CustomAlert = () => {
-    // const classes = useStyles();
-    return(
+    return (
       // <Collapse in>
-            <Alert  icon={false} sx={{
-              width: 'auto',
-              fontSize: '2.8rem',
-              alignItems:'center',
-              justifyContent: 'center',
-            }} severity="info">
-              <span>No Music is Playing on Spotify</span>
-            </Alert>
+      <Alert
+        icon={false}
+        sx={{
+          width: "28.8rem",
+          height: "15.8rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "2rem", // Adjust the font size for the span text
+        }}
+        severity="info"
+      >
+        <span>{errorURlMapping[props.error][1]}</span>
+      </Alert>
       // </Collapse>
     );
-  }
-  const NoMusicContent = () =>{
+  };
+  const NoMusicContent = () => {
     return (
       <Grid container alignItems="center">
-      <Grid item align="center" xs={4}>
-        <img
-          src={"https://wp.hindi.scoopwhoop.com/wp-content/uploads/2022/06/62a86beea7547a0001e08b08_f3b62a81-4a12-4ec3-a883-b11d820a0e8b.gif"}
-          alt="album_cover"
-          height="100%"
-          width="100%"
-        />
-      </Grid>
-      <Grid item align="center" xs={8}>
-         <CustomAlert/>
-        {/* <Typography color="textSecondary" variant="subtitle1">
+        <Grid item align="center" xs={4}>
+          <img
+            src={errorURlMapping[props.error][0]}
+            alt="album_cover"
+            style={{
+              height: "16.3rem", // Set the height to cover the container
+              width: "100%", // Set the width to cover the container
+              objectFit: "cover", // Ensure the image covers the container while maintaining its aspect ratio
+            }}
+          />
+        </Grid>
+        <Grid item align="center" xs={8}>
+          <CustomAlert />
+          {/* <Typography color="textSecondary" variant="subtitle1">
           {props.artist}
         </Typography> */}
-        {/* <div>
+          {/* <div>
           <IconButton onClick={props.is_playing? pauseSong : playSong}>
             {props.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
           </IconButton>
@@ -125,15 +156,14 @@ const MusicPlayer = (props) => {
             <SkipNextIcon /> 0/0
           </IconButton>
         </div> */}
+        </Grid>
       </Grid>
-    </Grid>
     );
-  }
-     
+  };
 
   return (
     <Card>
-      {props.error?<NoMusicContent/> : <MusicContent/>}
+      {props.error ? <NoMusicContent /> : <MusicContent />}
       <LinearProgress variant="determinate" value={songprogress} />
     </Card>
   );

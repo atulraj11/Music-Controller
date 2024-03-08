@@ -16,18 +16,15 @@ const CreateRoomPage = () => {
   const navigate = useNavigate();
   const [votes, setVotes] = useState(2);
   const [guestCanPause, setGuestCanPause] = useState(true);
- 
 
   const handleVotesChange = (e) => {
     setVotes(e.target.value);
   };
 
   const handleGuestCanPauseChange = (e) => {
-    // console.log(e.target.value)
     setGuestCanPause(e.target.value === "true" ? true : false);
   };
 
-  
   const handleCreateRoomButtonPressed = () => {
     const requestOptions = {
       method: "POST",
@@ -48,7 +45,7 @@ const CreateRoomPage = () => {
       .catch((error) => console.error("Error during fetching:", error));
   };
 
-    const CreateButton = () => {
+  const CreateButton = () => {
     return (
       <>
         <Grid item xs={12} align="center">
@@ -70,7 +67,6 @@ const CreateRoomPage = () => {
     );
   };
 
-  
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} align="center">
@@ -86,7 +82,6 @@ const CreateRoomPage = () => {
           <RadioGroup
             row
             value={guestCanPause.toString()}
-            //defaultValue ={guestCanPause.toString()}
             onChange={handleGuestCanPauseChange}
           >
             <FormControlLabel
@@ -123,7 +118,7 @@ const CreateRoomPage = () => {
           </FormHelperText>
         </FormControl>
       </Grid>
-      <CreateButton/>
+      <CreateButton />
     </Grid>
   );
 };
