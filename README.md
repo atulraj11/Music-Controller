@@ -1,6 +1,5 @@
 
-https://github.com/atulraj11/Music-Controller/assets/68856282/1863531f-6257-4e62-b4be-17b7083dfc6d
-
+![](https://github.com/RussH-code/Party-room-music-controller/blob/main/demo.gif)
 
 # Music Controller
 
