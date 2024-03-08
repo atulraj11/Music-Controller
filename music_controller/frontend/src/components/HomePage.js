@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import JoinRoomPage from "./JoinRoomPage";
 import CreateRoomPage from "./CreateRoomPage";
-// import CreateRoom from "./CreateRoom";
-// import Room2 from "./Room2";
 import Room from "./Room";
 import { Grid, Button, ButtonGroup, Typography } from "@material-ui/core";
 import {
