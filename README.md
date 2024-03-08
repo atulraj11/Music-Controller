@@ -1,6 +1,5 @@
 
 ![](demo.mp4)
-
 # Music Controller
 
 Create party rooms and control music that is played on your Spotify account.
@@ -24,9 +23,6 @@ App created with Django on the backend and React on frontend. Styling with Mater
 - Display album cover
 - Display Artist image
 - Set required votes to skip (guest can vote)
-
-![](spotify api workflow.png)
-
 
 ## Spotify developer account
 
