@@ -1,5 +1,4 @@
-
-https://github.com/atulraj11/Music-Controller/assets/68856282/a68d33fd-24c9-4b63-901e-08dc809cf964
+![]()
 
 # Music Controller
 
