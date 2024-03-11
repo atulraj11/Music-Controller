@@ -23,7 +23,7 @@ App created with Django on the backend and React on frontend. Styling with Mater
 - Display song's progress
 - Display album cover
 - Display Artist image
-- Set required votes to skip (guest can vote
+- Set required votes to skip (guest can vote)
 
   
 ![spotify api workflow](https://github.com/atulraj11/Music-Controller/assets/68856282/c886cbda-6d5f-462b-9394-8a81c1fc4027)
